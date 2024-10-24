@@ -19,9 +19,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-parent_dir = Path(__file__).resolve().parent.parent
-sellers = parent_dir / "data_scraper/sellers.xlsx"
-products = parent_dir / "data_scraper/products.xlsx"
+parent_dir = Path(__file__).resolve().parent
+sellers = parent_dir / "data/sellers.xlsx"
+products = parent_dir / "data/products.xlsx"
 
 # Завантаження даних
 data_handler = DataHandler(sellers_file=str(sellers), products_file=str(products))
