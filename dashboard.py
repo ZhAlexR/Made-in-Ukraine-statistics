@@ -1,5 +1,4 @@
 import os
-
 import streamlit as st
 import pandas as pd
 from data_handler import DataHandler
@@ -7,10 +6,14 @@ from metrics_calculator import MetricsCalculator
 from plotter import Plotter
 from pathlib import Path
 
-
 parent_dir = Path(__file__).resolve().parent
-sellers = parent_dir / "data/sellers.parquet"
-products = parent_dir / "data/products.parquet"
+sellers = parent_dir / "data/sellers.csv"
+products = parent_dir / "data/products.csv"
+
+# Ensure that the CSV files exist
+if not sellers.exists() or not products.exists():
+    st.error("Data files are missing. Please run the scraper to download the data.")
+    st.stop()
 
 sellers_mtime = os.path.getmtime(sellers)
 products_mtime = os.path.getmtime(products)
@@ -27,6 +30,10 @@ sellers_data, products_data = load_data(
     products_mtime
 )
 
+# The rest of your Streamlit app code remains the same
+# ...
+
+# Date inputs
 start_date = st.date_input(
     "Початкова дата",
     value=sellers_data.index.min().date(),
@@ -52,12 +59,15 @@ def get_metrics(products_data, sellers_data, start_date, end_date):
 
 metrics = get_metrics(products_data, sellers_data, start_date, end_date)
 
+# Display metrics
 st.subheader("Основні метрики за обраний період:")
 metrics_df = pd.DataFrame(metrics.items(), columns=['Метрика', 'Значення'])
 st.table(metrics_df)
 
+# Initialize plotter
 plotter = Plotter()
 
+# Visualization
 st.subheader("Візуалізація даних")
 
 col1, col2 = st.columns(2)

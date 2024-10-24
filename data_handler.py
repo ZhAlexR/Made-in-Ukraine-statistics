@@ -1,18 +1,20 @@
-# data_handler.py
-
 import pandas as pd
 
 class DataHandler:
     def __init__(self, sellers_file, products_file):
-        self.sellers_data = pd.read_parquet(sellers_file)
-        self.products_data = pd.read_parquet(products_file)
+        # Use the correct delimiter and encoding
+        self.sellers_data = pd.read_csv(sellers_file, sep=';', encoding='utf-8')
+        self.products_data = pd.read_csv(products_file, sep=';', encoding='utf-8')
 
+        # Parse the 'Оновлено' column as datetime
         self.sellers_data['Оновлено'] = pd.to_datetime(self.sellers_data['Оновлено'])
         self.products_data['Оновлено'] = pd.to_datetime(self.products_data['Оновлено'])
 
+        # Set 'Оновлено' as the index
         self.sellers_data.set_index('Оновлено', inplace=True)
         self.products_data.set_index('Оновлено', inplace=True)
 
+        # Sort the dataframes by index
         self.sellers_data.sort_index(inplace=True)
         self.products_data.sort_index(inplace=True)
 
