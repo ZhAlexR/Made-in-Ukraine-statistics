@@ -6,6 +6,8 @@ from metrics_calculator import MetricsCalculator
 from plotter import Plotter
 from pathlib import Path
 
+st.set_page_config(layout="wide")
+
 parent_dir = Path(__file__).resolve().parent
 sellers = parent_dir / "data/sellers.csv"
 products = parent_dir / "data/products.csv"
@@ -29,9 +31,6 @@ sellers_data, products_data = load_data(
     sellers_mtime,
     products_mtime
 )
-
-# The rest of your Streamlit app code remains the same
-# ...
 
 # Date inputs
 start_date = st.date_input(
