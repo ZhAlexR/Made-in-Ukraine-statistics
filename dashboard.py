@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 import pandas as pd
 from data_handler import DataHandler
@@ -10,13 +12,20 @@ parent_dir = Path(__file__).resolve().parent
 sellers = parent_dir / "data/sellers.parquet"
 products = parent_dir / "data/products.parquet"
 
-@st.cache_data
-def load_data(sellers_file, products_file):
-    data_handler = DataHandler(sellers_file, products_file)
-    sellers_data, products_data = data_handler.get_data()
-    return sellers_data, products_data
+sellers_mtime = os.path.getmtime(sellers)
+products_mtime = os.path.getmtime(products)
 
-sellers_data, products_data = load_data(str(sellers), str(products))
+@st.cache_data
+def load_data(sellers_file, products_file, sellers_mtime, products_mtime):
+    data_handler = DataHandler(sellers_file, products_file)
+    return data_handler.get_data()
+
+sellers_data, products_data = load_data(
+    str(sellers),
+    str(products),
+    sellers_mtime,
+    products_mtime
+)
 
 start_date = st.date_input(
     "Початкова дата",
