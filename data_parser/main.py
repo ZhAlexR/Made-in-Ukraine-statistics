@@ -8,7 +8,7 @@ urls = [
     "https://madeinukraine.gov.ua/files/perelik-prodavtsiv/perelik-prodavtsiv.csv"
 ]
 
-files_name = ["sellers", "products"]
+files_name = ["products", "sellers"]
 CURRENT_DIR = Path.cwd()
 
 
