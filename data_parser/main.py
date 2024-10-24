@@ -1,7 +1,7 @@
 import asyncio
 from pathlib import Path
 
-from data_parser.scraper import get_files
+from scraper import get_files
 
 urls = [
     "https://madeinukraine.gov.ua/files/perelik-tovariv/products.xlsx",
