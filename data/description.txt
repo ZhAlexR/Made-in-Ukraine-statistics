@@ -1,0 +1,3 @@
+The two files should be located in this folder:
+    1. products.xlsx
+    2. sellers.xlsx
