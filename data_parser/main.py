@@ -4,8 +4,8 @@ from pathlib import Path
 from scraper import get_files
 
 urls = [
-    "https://madeinukraine.gov.ua/files/perelik-tovariv/products.xlsx",
-    "https://madeinukraine.gov.ua/files/perelik-prodavtsiv/perelik-prodavtsiv.xlsx"
+    "https://madeinukraine.gov.ua/files/perelik-tovariv/products.csv",
+    "https://madeinukraine.gov.ua/files/perelik-prodavtsiv/perelik-prodavtsiv.csv"
 ]
 
 files_name = ["sellers", "products"]
