@@ -6,10 +6,14 @@ class MetricsCalculator:
         self.sellers_data = sellers_data
 
     def calculate_metrics(self, start_date, end_date):
+        start_date = pd.Timestamp(start_date)
+        end_date = pd.Timestamp(end_date)
         filtered_products = self.products_data[
-            (self.products_data['Оновлено'] >= pd.Timestamp(start_date)) & (self.products_data['Оновлено'] <= pd.Timestamp(end_date))]
+            (self.products_data.index >= start_date) & (self.products_data.index <= end_date)
+            ]
         filtered_sellers = self.sellers_data[
-            (self.sellers_data['Оновлено'] >= pd.Timestamp(start_date)) & (self.sellers_data['Оновлено'] <= pd.Timestamp(end_date))]
+            (self.sellers_data.index >= start_date) & (self.sellers_data.index <= end_date)
+            ]
 
         unique_manufacturers = filtered_products['Юридична назва'].nunique()
         unique_brands = filtered_products['Бренд'].nunique()

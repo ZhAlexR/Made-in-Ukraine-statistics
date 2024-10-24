@@ -1,52 +1,56 @@
-from pathlib import Path
-
 import streamlit as st
 import pandas as pd
 from data_handler import DataHandler
 from metrics_calculator import MetricsCalculator
 from plotter import Plotter
+from pathlib import Path
 
-st.markdown(
-    """
-    <style>
-    .main {
-        max-width: 100% !important;
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 parent_dir = Path(__file__).resolve().parent
-sellers = parent_dir / "data/sellers.xlsx"
-products = parent_dir / "data/products.xlsx"
+sellers = parent_dir / "data/sellers.parquet"
+products = parent_dir / "data/products.parquet"
 
-# Завантаження даних
-data_handler = DataHandler(sellers_file=str(sellers), products_file=str(products))
-sellers_data, products_data = data_handler.get_data()
+@st.cache_data
+def load_data(sellers_file, products_file):
+    data_handler = DataHandler(sellers_file, products_file)
+    sellers_data, products_data = data_handler.get_data()
+    return sellers_data, products_data
 
-# Вибір дат через Streamlit
-start_date = st.date_input("Початкова дата", value=sellers_data['Оновлено'].min().date(), min_value=sellers_data['Оновлено'].min().date(), max_value=sellers_data['Оновлено'].max().date())
-end_date = st.date_input("Кінцева дата", value=sellers_data['Оновлено'].max().date(), min_value=sellers_data['Оновлено'].min().date(), max_value=sellers_data['Оновлено'].max().date())
+sellers_data, products_data = load_data(str(sellers), str(products))
 
-# Підрахунок метрик
-metrics_calculator = MetricsCalculator(products_data, sellers_data)
-metrics = metrics_calculator.calculate_metrics(start_date, end_date)
+start_date = st.date_input(
+    "Початкова дата",
+    value=sellers_data.index.min().date(),
+    min_value=sellers_data.index.min().date(),
+    max_value=sellers_data.index.max().date()
+)
 
-# Відображення метрик
+end_date = st.date_input(
+    "Кінцева дата",
+    value=sellers_data.index.max().date(),
+    min_value=sellers_data.index.min().date(),
+    max_value=sellers_data.index.max().date()
+)
+
+if start_date > end_date:
+    st.error("Початкова дата не може бути пізніше за кінцеву дату.")
+    st.stop()
+
+@st.cache_data
+def get_metrics(products_data, sellers_data, start_date, end_date):
+    metrics_calculator = MetricsCalculator(products_data, sellers_data)
+    return metrics_calculator.calculate_metrics(start_date, end_date)
+
+metrics = get_metrics(products_data, sellers_data, start_date, end_date)
+
 st.subheader("Основні метрики за обраний період:")
 metrics_df = pd.DataFrame(metrics.items(), columns=['Метрика', 'Значення'])
 st.table(metrics_df)
 
-# Створення об'єкта Plotter для побудови графіків
 plotter = Plotter()
 
-# Відображення графіків у сітці 2x2
 st.subheader("Візуалізація даних")
 
-# Створюємо перший ряд колонок для двох графіків
 col1, col2 = st.columns(2)
 
 with col1:
@@ -55,7 +59,6 @@ with col1:
 with col2:
     plotter.plot_brands_combined(products_data, start_date, end_date)
 
-# Створюємо другий ряд колонок для двох графіків
 col3, col4 = st.columns(2)
 
 with col3:
@@ -64,6 +67,5 @@ with col3:
 with col4:
     plotter.plot_sellers_combined(sellers_data, start_date, end_date)
 
-# Окремо виводимо кругову діаграму і теплову карту
 plotter.plot_pie_chart(products_data)
 plotter.plot_interactive_heatmap(products_data, start_date, end_date)
