@@ -59,9 +59,12 @@ def get_metrics(products_data, sellers_data, start_date, end_date):
 
 metrics = get_metrics(products_data, sellers_data, start_date, end_date)
 
-# Display metrics
 st.subheader("Основні метрики за обраний період:")
+
+# Create DataFrame and ensure 'Значення' is of type str
 metrics_df = pd.DataFrame(metrics.items(), columns=['Метрика', 'Значення'])
+metrics_df['Значення'] = metrics_df['Значення'].astype(str)
+
 st.table(metrics_df)
 
 # Initialize plotter

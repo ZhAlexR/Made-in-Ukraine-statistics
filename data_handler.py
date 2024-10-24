@@ -2,13 +2,12 @@ import pandas as pd
 
 class DataHandler:
     def __init__(self, sellers_file, products_file):
-        # Use the correct delimiter and encoding
-        self.sellers_data = pd.read_csv(sellers_file, sep=';', encoding='utf-8')
-        self.products_data = pd.read_csv(products_file, sep=';', encoding='utf-8')
+        self.sellers_data = pd.read_csv(sellers_file, sep=';', encoding='utf-8', on_bad_lines='skip')
+        self.products_data = pd.read_csv(products_file, sep=';', encoding='utf-8', on_bad_lines='skip')
 
-        # Parse the 'Оновлено' column as datetime
-        self.sellers_data['Оновлено'] = pd.to_datetime(self.sellers_data['Оновлено'])
-        self.products_data['Оновлено'] = pd.to_datetime(self.products_data['Оновлено'])
+        # Parse the 'Оновлено' column as datetime with dayfirst=True
+        self.sellers_data['Оновлено'] = pd.to_datetime(self.sellers_data['Оновлено'], dayfirst=True)
+        self.products_data['Оновлено'] = pd.to_datetime(self.products_data['Оновлено'], dayfirst=True)
 
         # Set 'Оновлено' as the index
         self.sellers_data.set_index('Оновлено', inplace=True)
