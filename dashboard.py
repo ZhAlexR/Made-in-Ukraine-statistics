@@ -1,3 +1,4 @@
+import logging
 import os
 import streamlit as st
 import pandas as pd
@@ -5,6 +6,16 @@ from data_handler import DataHandler
 from metrics_calculator import MetricsCalculator
 from plotter import Plotter
 from pathlib import Path
+
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
+    handlers=[logging.StreamHandler()]
+)
+
+logger = logging.getLogger(__name__)
+
+logger.info("Starting the Streamlit app")
 
 st.set_page_config(layout="wide")
 
