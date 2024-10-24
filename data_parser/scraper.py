@@ -20,7 +20,6 @@ async def download_file(session, url, file_path, filename):
     async with session.get(url) as response:
         response.raise_for_status()
         content = await response.read()
-        # Save the content to a .csv file
         file_path.parent.mkdir(parents=True, exist_ok=True)
         with open(file_path, "wb") as f:
             f.write(content)
